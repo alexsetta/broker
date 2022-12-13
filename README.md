@@ -1,4 +1,4 @@
-# SmartBot
+# Broker
 É um robô que monitora a cotação de ativos (ações, etfs e smartcoins) e alerta quando 
 atingir um determinado limiar de ganhos ou perdas.  Além disso, informa se você deve 
 vender ou comprar ativos, monitorando e analisando o RSI*.
@@ -28,7 +28,7 @@ de uma mensagem via Telegram e/ou email.
 Existem 2 arquivos de configuração: smartbot.cfg e carteira.cfg (no repositório oo modelos 
 estão com a extensão .sample, basta renomea-los).
 
-### smartbot.cfg
+### broker.cfg
 Cuida da configuração do programa em si.
 
     {  
@@ -55,7 +55,7 @@ Existem diversos tutoriais ensinando a fazer isso, como
 
 **emailPassaword**: senha da conta que fará o envio do email.
 
-**emailTo**: endereço de email que receberá as mensagens do smartbot.
+**emailTo**: endereço de email que receberá as mensagens do broker.
 
 ### carteira.cfg
 Para elaboração da carteira o programa utiliza dados de 2 locais: [Binance](https://www.binance.com/pt-BR) 
