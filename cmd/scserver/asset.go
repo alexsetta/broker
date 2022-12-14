@@ -56,7 +56,7 @@ func (a *Asset) Find() error {
 
 	ativo := tipos.Ativo{}
 	for _, atv := range carteira.Ativos {
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirPath, a.loadFile)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, a.loadFile)
 		if strings.ToLower(atv.Simbolo) == a.id {
 			if a.loadFile && len(atv.RSI) > 0 {
 				mr[atv.Simbolo].Load()
@@ -93,7 +93,7 @@ func (a *Asset) GetAll() ([]tipos.Result, error) {
 	resposta := ""
 	var outJson []tipos.Result
 	for _, atv := range carteira.Ativos {
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirPath, a.loadFile)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, a.loadFile)
 		_, _, out, err := cotacao.Calculo(atv, config, alerta, mr)
 		if err != nil {
 			return []tipos.Result{}, err

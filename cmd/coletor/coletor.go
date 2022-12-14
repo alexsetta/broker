@@ -16,7 +16,9 @@ import (
 )
 
 const (
-	dirBase = "../.."
+	dirBase   = "../.."
+	dirFiles  = dirBase + "/files/"
+	dirConfig = dirBase + "/config/"
 )
 
 var (
@@ -26,14 +28,14 @@ var (
 	config    = tipos.Config{}
 	loc       = time.FixedZone("UTC-3", -3*60*60)
 	ultimoDia = "00"
-	filename  = dirBase + "/files/ultimo.txt"
+	filename  = dirFiles + "ultimo.txt"
 )
 
 func main() {
 	Formatter := new(log.JSONFormatter)
 	Formatter.TimestampFormat = "2006-01-02 15:04:05.000"
 	log.SetFormatter(Formatter)
-	f, err := os.OpenFile(dirBase+"/files/coletor.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	f, err := os.OpenFile(dirFiles+"coletor.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -50,7 +52,7 @@ func main() {
 		fmt.Println("Simulando trade...")
 	}
 
-	if err := cfg.ReadConfig(dirBase+"/config/broker.cfg", &config); err != nil {
+	if err := cfg.ReadConfig(dirConfig+"/broker.cfg", &config); err != nil {
 		fmt.Println(err)
 		log.Fatal(err)
 	}
@@ -66,20 +68,20 @@ func main() {
 	}
 
 	// cria um RSI para cada ativo
-	if err := cfg.ReadConfig(dirBase+"/config/carteira.cfg", &carteira); err != nil {
+	if err := cfg.ReadConfig(dirConfig+"carteira.cfg", &carteira); err != nil {
 		fmt.Println(err)
 		log.Fatal(err)
 	}
 	mr := make(map[string]*rsi.RSI)
 	for _, atv := range carteira.Ativos {
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirBase+"/files", false)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, false)
 		if len(atv.RSI) > 0 {
 			mr[atv.Simbolo].Load()
 		}
 	}
 
 	for {
-		if err := cfg.ReadConfig(dirBase+"/config/carteira.cfg", &carteira); err != nil {
+		if err := cfg.ReadConfig(dirConfig+"carteira.cfg", &carteira); err != nil {
 			fmt.Println(err)
 			log.Fatal(err)
 		}
@@ -161,7 +163,7 @@ func total(cfg tipos.Config, cart tipos.Carteira) string {
 		if atv.Tipo != "criptomoeda" {
 			continue
 		}
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirBase+"/files", false)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, false)
 		_, _, out, err := cotacao.Calculo(atv, cfg, alerta, mr)
 		if err != nil {
 			return fmt.Sprintf("total: %w", err)

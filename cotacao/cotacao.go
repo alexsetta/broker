@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alexsetta/broker/rsi"
 	"github.com/alexsetta/broker/util"
+	"io"
 	"math"
 	"net/http"
 	"regexp"
@@ -37,7 +38,7 @@ func getHttp(url string) (string, error) {
 		return "", fmt.Errorf("gethttp: %w", err)
 	}
 
-	b, err := os.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("gethttp: %w", err)
 	}

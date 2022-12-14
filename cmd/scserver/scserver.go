@@ -35,7 +35,9 @@ var (
 )
 
 const (
-	dirPath = "../../files/"
+	dirBase   = "../.."
+	dirFiles  = dirBase + "/files/"
+	dirConfig = dirBase + "/config/"
 )
 
 func main() {

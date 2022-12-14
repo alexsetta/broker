@@ -20,7 +20,7 @@ var (
 )
 
 func main() {
-	if err := cfg.ReadConfig(dirBase+"/config/smartbot.cfg", &config); err != nil {
+	if err := cfg.ReadConfig(dirBase+"/config/broker.cfg", &config); err != nil {
 		log.Fatal(fmt.Sprintf("cotacao: read coletor.cfg: %s", err))
 	}
 	config.TelegramID = 0

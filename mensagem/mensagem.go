@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/alexsetta/broker/tipos"
 	"github.com/alexsetta/telegram"
+	"gopkg.in/gomail.v2"
 )
 
 func Send(cfg tipos.Config, msg string) error {

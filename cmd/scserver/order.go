@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/alexsetta/broker/util"
+	"os"
+
 	//"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 	"log"
@@ -26,13 +28,20 @@ type OrderResult struct {
 
 func (r *OrderResult) String() string {
 	res := fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
-	util.AppendFile("../../files/order.log", res)
+	util.AppendFile(dirFiles+"order.log", res)
 	return res
 }
 
 func (r *OrderResult) Json() string {
 	return fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`,
 		r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
+}
+
+func (r *OrderResult) Save() error {
+	if err := os.WriteFile(dirFiles+"order.json", []byte(r.Json()), 0644); err != nil {
+		return err
+	}
+	return nil
 }
 
 func Order(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +84,7 @@ func Order(w http.ResponseWriter, r *http.Request) {
 		toQty:     fromAsset.data.Quantidade * fromAsset.data.Preco / dolar,
 		toValue:   toAsset.data.Preco,
 	}
+	_ = res.Save()
 	fmt.Println(res.String())
 	fmt.Fprint(w, res.Json())
 }
