@@ -146,7 +146,7 @@ func USD() (float64, error) {
 
 	type result struct {
 		USDBRL struct {
-			Price string `json:"low"`
+			Price string `json:"bid"`
 		} `json:"USDBRL"`
 	}
 	var a result
