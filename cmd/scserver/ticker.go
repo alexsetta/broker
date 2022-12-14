@@ -7,7 +7,7 @@ import (
 )
 
 func Ticker(c *gin.Context) {
-	id := c.Param("if")
+	id := c.Param("id")
 
 	asset, err := NewAsset(id, true)
 	if err != nil {
