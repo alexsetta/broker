@@ -1,18 +1,17 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
-func Ticker(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+func Ticker(c *gin.Context) {
+	id := c.Param("if")
 
 	asset, err := NewAsset(id, true)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -22,21 +21,21 @@ func Ticker(w http.ResponseWriter, r *http.Request) {
 	if id == "all" {
 		data, err := asset.GetAll()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			c.String(http.StatusInternalServerError, err.Error())
 			return
 		}
 		resposta, _ = PrettyJson(data)
-		_, _ = w.Write([]byte(resposta))
+		c.String(http.StatusOK, resposta)
 		return
 	}
 
 	err = asset.Find()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	prettyJSON, _ := PrettyJson(asset.data)
 	resposta = prettyJSON + ","
 	resposta = "[" + resposta[:len(resposta)-1] + "]"
-	_, _ = w.Write([]byte(resposta))
+	c.String(http.StatusOK, resposta)
 }

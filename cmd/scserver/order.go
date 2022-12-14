@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/alexsetta/broker/util"
+	"github.com/gin-gonic/gin"
 	"os"
+	"strings"
 
-	//"github.com/gin-gonic/gin"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -33,8 +33,7 @@ func (r *OrderResult) String() string {
 }
 
 func (r *OrderResult) Json() string {
-	return fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`,
-		r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
+	return fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
 }
 
 func (r *OrderResult) Save() error {
@@ -44,35 +43,31 @@ func (r *OrderResult) Save() error {
 	return nil
 }
 
-func Order(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	from := vars["from"]
+func Order(c *gin.Context) {
+	from := c.Param("from")
 	if from == "" {
-		http.Error(w, "Argument 'from' not found", http.StatusInternalServerError)
+		c.String(http.StatusBadRequest, "argument 'from' is required")
 		return
 	}
 
-	to := vars["to"]
+	to := c.Param("to")
 	if to == "" {
-		http.Error(w, "Argument 'to' not found", http.StatusInternalServerError)
+		c.String(http.StatusBadRequest, "argument 'to' is required")
 		return
 	}
 
-	save := false
-	if vars["save"] > "" {
-		save = true
-	}
-	log.Println("Order from:", from, "to:", to, "save:", save)
+	verb := strings.Split(c.Request.URL.Path, "/")[1]
+	log.Println(verb+" from:", from, "to:", to)
 
 	fromAsset, err := NewAsset(from, false)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	toAsset, err := NewAsset(to, false)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -86,9 +81,9 @@ func Order(w http.ResponseWriter, r *http.Request) {
 		toQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
 	}
 
-	if save {
+	if verb == "order" {
 		_ = res.Save()
 	}
 	fmt.Println(res.String())
-	fmt.Fprint(w, res.Json())
+	c.String(http.StatusOK, res.String())
 }
