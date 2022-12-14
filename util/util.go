@@ -146,7 +146,7 @@ func USD() (float64, error) {
 
 	type result struct {
 		USDBRL struct {
-			Bid string `json:"bid"`
+			Price string `json:"low"`
 		} `json:"USDBRL"`
 	}
 	var a result
@@ -155,7 +155,7 @@ func USD() (float64, error) {
 		return 0, fmt.Errorf("usd: unmarshal: %w", err)
 	}
 
-	return StringToValue(fmt.Sprintf("%v", a.USDBRL.Bid)), nil
+	return StringToValue(fmt.Sprintf("%v", a.USDBRL.Price)), nil
 }
 
 func USDToBRL(usd float64) float64 {
