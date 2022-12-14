@@ -71,18 +71,14 @@ func Order(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dolar := toAsset.data.Preco
-	if dolar == 0 {
-		dolar = 1
-	}
 	res := OrderResult{
 		time:      util.Now(),
 		from:      fromAsset.data.Simbolo,
-		fromQty:   fromAsset.data.Quantidade,
 		fromValue: fromAsset.data.Preco,
+		fromQty:   fromAsset.data.Quantidade,
 		to:        toAsset.data.Simbolo,
-		toQty:     fromAsset.data.Quantidade * fromAsset.data.Preco / dolar,
 		toValue:   toAsset.data.Preco,
+		toQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
 	}
 	_ = res.Save()
 	fmt.Println(res.String())
