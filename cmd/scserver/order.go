@@ -57,7 +57,12 @@ func Order(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Argument 'to' not found", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Order from", from, "to", to)
+
+	save := false
+	if vars["save"] > "" {
+		save = true
+	}
+	log.Println("Order from:", from, "to:", to, "save:", save)
 
 	fromAsset, err := NewAsset(from, false)
 	if err != nil {
@@ -80,7 +85,10 @@ func Order(w http.ResponseWriter, r *http.Request) {
 		toValue:   toAsset.data.Preco,
 		toQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
 	}
-	_ = res.Save()
+
+	if save {
+		_ = res.Save()
+	}
 	fmt.Println(res.String())
 	fmt.Fprint(w, res.Json())
 }

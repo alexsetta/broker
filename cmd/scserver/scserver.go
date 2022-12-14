@@ -52,6 +52,7 @@ func main() {
 	router.HandleFunc("/ticker/{id}", Ticker)
 	router.HandleFunc("/total/", Total)
 	router.HandleFunc("/order/{from}/{to}", Order)
+	router.HandleFunc("/order/{from}/{to}/{save}", Order)
 
 	log.Println("Listen port " + porta)
 	log.Fatal(http.ListenAndServe(":"+porta, router))
