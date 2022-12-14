@@ -75,11 +75,6 @@ func Calculo(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[
 	result.RSI = 0.00
 	result.Percentual = math.Trunc(perc*100) / 100
 
-	//if ativo.Simbolo == "SUSHIBUSD" && true {
-	//	fmt.Println(result)
-	//	os.Exit(0)
-	//}
-
 	if (ativo.Tipo == "criptomoeda" || ativo.Tipo == "etf") && len(ativo.RSI) > 0 {
 		//result.RSI, _ = GetRSI(ativo.RSI)
 		rsi[ativo.Simbolo].Add(result.Preco)
@@ -221,6 +216,14 @@ func priceString(ativo tipos.Ativo, doc string) (string, []string, error) {
 func Price(ativo tipos.Ativo) (float64, []string, error) {
 	var s string
 	var m []string
+
+	if ativo.Simbolo == "USD" {
+		brl, err := util.USD()
+		if err != nil {
+			return 0, m, fmt.Errorf("price: %w", err)
+		}
+		return brl, m, nil
+	}
 
 	doc, err := getHttp(ativo.Link)
 	if err != nil {

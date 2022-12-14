@@ -138,17 +138,30 @@ func GetHttp(url string) (string, error) {
 	return string(b), nil
 }
 
-func USDToBRL(usd float64) float64 {
-	s, err := GetHttp("https://api.binance.com/api/v3/ticker/price?symbol=BUSDBRL")
+func USD() (float64, error) {
+	s, err := GetHttp("https://economia.awesomeapi.com.br/json/last/usd-brl")
 	if err != nil {
-		return 0
+		return 0, fmt.Errorf("usd: gethttp: %w", err)
 	}
 
-	var a map[string]interface{}
+	type result struct {
+		USDBRL struct {
+			Bid string `json:"bid"`
+		} `json:"USDBRL"`
+	}
+	var a result
 	err = json.Unmarshal([]byte(s), &a)
 	if err != nil {
-		return 0
+		return 0, fmt.Errorf("usd: unmarshal: %w", err)
 	}
 
-	return usd * StringToValue(fmt.Sprintf("%v", a["price"]))
+	return StringToValue(fmt.Sprintf("%v", a.USDBRL.Bid)), nil
+}
+
+func USDToBRL(usd float64) float64 {
+	brl, err := USD()
+	if err != nil {
+		return 0
+	}
+	return usd * brl
 }
