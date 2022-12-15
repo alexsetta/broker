@@ -81,8 +81,9 @@ func Order(c *gin.Context) {
 		ToQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
 	}
 
+	// fixme: calculate the order wrong
 	if to == "usd" {
-		res.ToQty *= fromAsset.data.Quantidade
+		res.ToQty = fromAsset.data.Quantidade * fromAsset.data.Preco
 	}
 
 	if verb == "order" {
