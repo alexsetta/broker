@@ -17,23 +17,23 @@ import (
 //}
 
 type OrderResult struct {
-	time      string
-	from      string
-	fromQty   float64
-	fromValue float64
-	to        string
-	toQty     float64
-	toValue   float64
+	Time      string
+	From      string
+	FromQty   float64
+	FromValue float64
+	To        string
+	ToQty     float64
+	ToValue   float64
 }
 
 func (r *OrderResult) String() string {
-	res := fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
+	res := fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.Time, r.From, r.FromQty, r.FromValue, r.To, r.ToQty, r.ToValue)
 	util.AppendFile(dirFiles+"order.log", res)
 	return res
 }
 
 func (r *OrderResult) Json() string {
-	return fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.time, r.from, r.fromQty, r.fromValue, r.to, r.toQty, r.toValue)
+	return fmt.Sprintf(`{"time":"%s","from":"%s","fromQty":%f,"fromValue":%f,"to":"%s","toQty":%f,"toValue":%f}`, r.Time, r.From, r.FromQty, r.FromValue, r.To, r.ToQty, r.ToValue)
 }
 
 func (r *OrderResult) Save() error {
@@ -72,18 +72,23 @@ func Order(c *gin.Context) {
 	}
 
 	res := OrderResult{
-		time:      util.Now(),
-		from:      fromAsset.data.Simbolo,
-		fromValue: fromAsset.data.Preco,
-		fromQty:   fromAsset.data.Quantidade,
-		to:        toAsset.data.Simbolo,
-		toValue:   toAsset.data.Preco,
-		toQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
+		Time:      util.Now(),
+		From:      fromAsset.data.Simbolo,
+		FromValue: fromAsset.data.Preco,
+		FromQty:   fromAsset.data.Quantidade,
+		To:        toAsset.data.Simbolo,
+		ToValue:   toAsset.data.Preco,
+		ToQty:     fromAsset.data.Quantidade / toAsset.data.Preco,
 	}
 
 	if verb == "order" {
 		_ = res.Save()
 	}
 	fmt.Println(res.String())
-	c.String(http.StatusOK, res.Json())
+	s, err := PrettyJson(res)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.String(http.StatusOK, s)
 }
