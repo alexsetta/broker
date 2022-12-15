@@ -2,8 +2,10 @@ package cotacao
 
 import (
 	"fmt"
-	"github.com/alexsetta/broker/rsi"
-	"github.com/alexsetta/broker/util"
+	"github.com/alexsetta/broker/pkg/mensagem"
+	"github.com/alexsetta/broker/pkg/rsi"
+	"github.com/alexsetta/broker/pkg/tipos"
+	"github.com/alexsetta/broker/pkg/util"
 	"io"
 	"math"
 	"net/http"
@@ -11,10 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/alexsetta/broker/mensagem"
-
-	"github.com/alexsetta/broker/tipos"
 )
 
 var (

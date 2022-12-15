@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/alexsetta/broker/rsi"
+	"github.com/alexsetta/broker/pkg/cfg"
+	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/rsi"
+	"github.com/alexsetta/broker/pkg/tipos"
 	"strings"
 	"time"
-
-	"github.com/alexsetta/broker/cfg"
-	"github.com/alexsetta/broker/cotacao"
-	"github.com/alexsetta/broker/tipos"
 )
 
 var (

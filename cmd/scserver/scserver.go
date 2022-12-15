@@ -2,13 +2,13 @@ package main
 
 import (
 	"crypto/tls"
+	"github.com/alexsetta/broker/pkg/tipos"
 	"log"
 	"net/http"
 	"os"
 	"text/template"
 	"time"
 
-	"github.com/alexsetta/broker/tipos"
 	"github.com/gin-gonic/gin"
 )
 

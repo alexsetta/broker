@@ -3,7 +3,7 @@ package mensagem
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/alexsetta/broker/tipos"
+	"github.com/alexsetta/broker/pkg/tipos"
 	"github.com/alexsetta/telegram"
 	"gopkg.in/gomail.v2"
 )

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/alexsetta/broker/pkg/cfg"
 	"github.com/alexsetta/broker/pkg/common"
@@ -28,7 +29,16 @@ var (
 
 func main() {
 	loga.NewLog(dir.Files + "monitor.log")
-	log.Info("Coletor iniciado")
+	log.Println("Monitor iniciado")
+
+	test := flag.Bool("test", false, "teste Telegram")
+	simula := flag.Bool("simula", false, "simula trade")
+	flag.Parse()
+
+	tipos.Simula = *simula
+	if tipos.Simula {
+		fmt.Println("Simulando trade...")
+	}
 
 	if err := cfg.ReadConfig(dir.Config+"/broker.cfg", &config); err != nil {
 		fmt.Println(err)
@@ -36,6 +46,13 @@ func main() {
 	}
 	if config.TimeNextAlert == 0.0 {
 		config.TimeNextAlert = 1
+	}
+
+	if *test {
+		if err := mensagem.Send(config, "Mensagem de teste"); err != nil {
+			log.Fatal(err)
+		}
+		os.Exit(0)
 	}
 
 	// cria um RSI para cada ativo

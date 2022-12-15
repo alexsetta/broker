@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/alexsetta/broker/cfg"
+	"github.com/alexsetta/broker/pkg/cfg"
 	"net/http"
 )
 

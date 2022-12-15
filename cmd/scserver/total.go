@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexsetta/broker/cfg"
-	"github.com/alexsetta/broker/cotacao"
-	"github.com/alexsetta/broker/rsi"
+	"github.com/alexsetta/broker/pkg/cfg"
+	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/rsi"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"

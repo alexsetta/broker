@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexsetta/broker/util"
+	"github.com/alexsetta/broker/pkg/util"
 	"github.com/gin-gonic/gin"
 	"os"
 	"strings"

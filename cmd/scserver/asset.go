@@ -3,9 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/alexsetta/broker/cotacao"
-	"github.com/alexsetta/broker/rsi"
-	"github.com/alexsetta/broker/tipos"
+	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/rsi"
+	"github.com/alexsetta/broker/pkg/tipos"
 	"strings"
 )
 

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexsetta/broker/cfg"
-	"github.com/alexsetta/broker/tipos"
+	"github.com/alexsetta/broker/pkg/cfg"
+	"github.com/alexsetta/broker/pkg/tipos"
 	"log"
 	"strings"
 
