@@ -85,5 +85,5 @@ func Order(c *gin.Context) {
 		_ = res.Save()
 	}
 	fmt.Println(res.String())
-	c.String(http.StatusOK, res.String())
+	c.String(http.StatusOK, res.Json())
 }
