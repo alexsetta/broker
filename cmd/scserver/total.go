@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/alexsetta/broker/pkg/cfg"
-	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/price"
 	"github.com/alexsetta/broker/pkg/rsi"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,7 +19,7 @@ func Total(c *gin.Context) {
 	// desabilita mensagens no Telegram
 	config.TelegramID = 0
 
-	if err := cfg.ReadConfig(dirConfig+"carteira.cfg", &carteira); err != nil {
+	if err := cfg.ReadConfig(dirConfig+"wallet.cfg", &carteira); err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -32,7 +32,7 @@ func Total(c *gin.Context) {
 		}
 		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, false)
 
-		_, _, out, err := cotacao.Calculo(atv, config, alerta, mr)
+		_, _, out, err := price.Get(atv, config, alerta, mr)
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error())
 			return

@@ -21,7 +21,7 @@ var (
 
 func main() {
 	if err := cfg.ReadConfig(dirBase+"/config/broker.cfg", &config); err != nil {
-		log.Fatal(fmt.Sprintf("cotacao: read coletor.cfg: %s", err))
+		log.Fatal(fmt.Sprintf("price: read broker.cfg: %s", err))
 	}
 	config.TelegramID = 0
 

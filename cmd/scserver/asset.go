@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/price"
 	"github.com/alexsetta/broker/pkg/rsi"
 	"github.com/alexsetta/broker/pkg/tipos"
 	"strings"
@@ -70,7 +70,7 @@ func (a *Asset) Find() error {
 		return fmt.Errorf("asset %s not found", a.id)
 	}
 
-	_, _, out, err := cotacao.Calculo(ativo, config, alerta, mr)
+	_, _, out, err := price.Get(ativo, config, alerta, mr)
 	if err != nil {
 		return err
 	}
@@ -94,7 +94,7 @@ func (a *Asset) GetAll() ([]tipos.Result, error) {
 	var outJson []tipos.Result
 	for _, atv := range carteira.Ativos {
 		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, a.loadFile)
-		_, _, out, err := cotacao.Calculo(atv, config, alerta, mr)
+		_, _, out, err := price.Get(atv, config, alerta, mr)
 		if err != nil {
 			return []tipos.Result{}, err
 		}

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	dirFile = "d:/dev/go/app/coletor/files"
+	dirFile = "d:/dev/go/app/broker/files"
 )
 
 func TestRSI_Add(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/alexsetta/broker/pkg/cfg"
-	"github.com/alexsetta/broker/pkg/cotacao"
+	"github.com/alexsetta/broker/pkg/price"
 	"github.com/alexsetta/broker/pkg/tipos"
 	"github.com/alexsetta/broker/pkg/util"
 	log "github.com/sirupsen/logrus"
@@ -37,7 +37,7 @@ func PrettyJson(data interface{}) (string, error) {
 }
 
 func test1() {
-	var filename string = "./coletor.log"
+	var filename string = "./broker.log"
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	Formatter := new(log.JSONFormatter)
 	Formatter.TimestampFormat = "2006-01-02 15:04:05"
@@ -49,10 +49,10 @@ func test1() {
 	}
 	log.Info("inicio")
 
-	if err := cfg.ReadConfig("d:/dev/go/app/coletor/carteira.cfg", &carteira); err != nil {
+	if err := cfg.ReadConfig("d:/dev/go/app/broker/wallet.cfg", &carteira); err != nil {
 		log.Fatal(err)
 	}
-	resp, _, result, err := cotacao.Calculo(carteira.Ativos[0], config, alerta, nil)
+	resp, _, result, err := price.Get(carteira.Ativos[0], config, alerta, nil)
 	if err != nil {
 		log.Println(err)
 	}
@@ -64,7 +64,7 @@ func test1() {
 	}
 	fmt.Printf("%s\n", prettyJSON)
 
-	rsi, err := cotacao.GetRSI("https://br.investing.com/crypto/bitcoin/btc-brl-technical")
+	rsi, err := price.GetRSI("https://br.investing.com/crypto/bitcoin/btc-brl-technical")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)

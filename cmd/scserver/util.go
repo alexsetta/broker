@@ -53,7 +53,7 @@ func ReadConfig() error {
 		return err
 	}
 
-	if err := cfg.ReadConfig(dirBase+"carteira.cfg", &carteira); err != nil {
+	if err := cfg.ReadConfig(dirBase+"wallet.cfg", &carteira); err != nil {
 		return err
 	}
 

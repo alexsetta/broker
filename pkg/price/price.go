@@ -1,11 +1,13 @@
-package cotacao
+package price
 
 import (
 	"fmt"
+	"github.com/alexsetta/broker/pkg/common"
 	"github.com/alexsetta/broker/pkg/mensagem"
 	"github.com/alexsetta/broker/pkg/rsi"
 	"github.com/alexsetta/broker/pkg/tipos"
 	"github.com/alexsetta/broker/pkg/util"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"math"
 	"net/http"
@@ -43,7 +45,7 @@ func getHttp(url string) (string, error) {
 	return string(b), nil
 }
 
-func Calculo(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[string]*rsi.RSI) (string, string, tipos.Result, error) {
+func Get(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[string]*rsi.RSI, file common.File) (string, string, tipos.Result, error) {
 	var result tipos.Result
 	price, m, err := Price(ativo)
 	if err != nil {
@@ -88,7 +90,7 @@ func Calculo(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[
 		result.Volume = util.StringToValue(m[29])
 	}
 	if cfg.SaveLog {
-		util.AppendFile("./cotacao.log", fmt.Sprintf("%v;%.8f;%.2f;%.9f;%0.0f;%0.0f", ativo.Simbolo, price, result.RSI, result.PriceChange, result.Volume, result.LastQty))
+		log.Info(fmt.Sprintf("%v;%.8f;%.2f;%.9f;%0.0f;%0.0f", ativo.Simbolo, price, result.RSI, result.PriceChange, result.Volume, result.LastQty))
 	}
 
 	res := fmt.Sprintf("%-12v %-20v %-15v", ativo.Simbolo, fmt.Sprintf("(%s) Preço: %.2f", moeda, price), fmt.Sprintf("Dif.: %.2f", diff))
