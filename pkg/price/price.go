@@ -2,7 +2,6 @@ package price
 
 import (
 	"fmt"
-	"github.com/alexsetta/broker/pkg/common"
 	"github.com/alexsetta/broker/pkg/mensagem"
 	"github.com/alexsetta/broker/pkg/rsi"
 	"github.com/alexsetta/broker/pkg/tipos"
@@ -45,7 +44,7 @@ func getHttp(url string) (string, error) {
 	return string(b), nil
 }
 
-func Get(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[string]*rsi.RSI, file common.File) (string, string, tipos.Result, error) {
+func Get(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[string]*rsi.RSI) (string, string, tipos.Result, error) {
 	var result tipos.Result
 	price, m, err := Price(ativo)
 	if err != nil {

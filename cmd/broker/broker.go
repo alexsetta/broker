@@ -61,7 +61,7 @@ func main() {
 
 		for _, ativo := range carteira.Ativos {
 			go func(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas) {
-				resp, semaforo, _, err := price.Get(ativo, config, alerta, mr, *file)
+				resp, semaforo, _, err := price.Get(ativo, config, alerta, mr)
 				if err != nil {
 					log.Println(err)
 					return
