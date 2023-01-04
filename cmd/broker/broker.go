@@ -28,7 +28,7 @@ var (
 
 func main() {
 	loga.NewLog(file.Log)
-	log.Info("Coletor iniciado")
+	log.Info("Broker iniciado")
 
 	if err := cfg.ReadConfig(file.Config, &config); err != nil {
 		log.Fatal(err)
