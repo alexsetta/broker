@@ -11,7 +11,6 @@ import (
 )
 
 func Total(c *gin.Context) {
-	fmt.Println("Total")
 	if err := cfg.ReadConfig(dirConfig+"broker.cfg", &config); err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
