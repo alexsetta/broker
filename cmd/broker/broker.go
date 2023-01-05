@@ -75,7 +75,6 @@ func main() {
 			fmt.Println(fmt.Errorf("writefile: %w", err))
 		}
 
-		//fmt.Println()
 		dia := time.Now().In(loc).Format("02")
 		if hm >= "07:00" && hm <= "08:00" && dia != ultimoDia {
 			ultimoDia = dia
