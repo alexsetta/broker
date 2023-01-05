@@ -60,6 +60,7 @@ type Result struct {
 	Inicial            float64 `json:"inicial"`
 	Preco              float64 `json:"preco"`
 	Resultado          float64 `json:"resultado"`
+	Moeda              string  `json:"moeda"`
 	Atual              float64 `json:"atual"`
 	Percentual         float64 `json:"percentual"`
 	RSI                float64 `json:"rsi"`

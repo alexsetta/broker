@@ -70,6 +70,7 @@ func Get(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[stri
 	result.Simbolo = ativo.Simbolo
 	result.Quantidade = ativo.Quantidade
 	result.Inicial = ativo.Inicial
+	result.Moeda = moeda
 	result.Atual = math.Trunc(atual*100) / 100
 	result.Resultado = math.Trunc(diff*100) / 100
 	result.Preco = math.Trunc(price*100) / 100
