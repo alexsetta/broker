@@ -1,6 +1,7 @@
 package rsi
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -10,8 +11,8 @@ const (
 )
 
 func TestRSI_Add(t *testing.T) {
-	r := NewRSI("teste", "", false)
-	assert.Equal(t, &RSI{id: "teste", filePath: "", loadFile: false}, r)
+	r := NewRSI("teste")
+	assert.Equal(t, &RSI{id: "teste"}, r)
 
 	r.Add(1.0)
 	r.Add(2.0)
@@ -36,8 +37,8 @@ func TestRSI_Add(t *testing.T) {
 }
 
 func TestRSI_CalculateRSI(t *testing.T) {
-	r := NewRSI("ETHBRL", dirFile, false)
-	assert.Equal(t, &RSI{id: "ETHBRL", filePath: dirFile, loadFile: false}, r)
+	r := NewRSI("ETHBRL")
+	assert.Equal(t, &RSI{id: "ETHBRL"}, r)
 
 	r.Add(6584.92)
 	r.Add(6584.92)
@@ -64,8 +65,8 @@ func TestRSI_CalculateRSI(t *testing.T) {
 }
 
 func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
-	r := NewRSI("ETHBRL", dirFile, false)
-	assert.Equal(t, &RSI{id: "ETHBRL", filePath: dirFile, loadFile: false}, r)
+	r := NewRSI("ETHBRL")
+	assert.Equal(t, &RSI{id: "ETHBRL"}, r)
 
 	r.Add(6584.92)
 	r.Add(6584.92)
@@ -81,8 +82,8 @@ func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 
 func TestRSI_ManyRSI(t *testing.T) {
 	mr := make(map[string]*RSI)
-	mr["ETHBRL"] = NewRSI("ETHBRL", dirFile, false)
-	assert.Equal(t, &RSI{id: "ETHBRL", filePath: dirFile, loadFile: false}, mr["ETHBRL"])
+	mr["ETHBRL"] = NewRSI("ETHBRL")
+	assert.Equal(t, &RSI{id: "ETHBRL"}, mr["ETHBRL"])
 
 	mr["ETHBRL"].Add(6584.92)
 	mr["ETHBRL"].Add(6584.92)
@@ -104,13 +105,15 @@ func TestRSI_ManyRSI(t *testing.T) {
 	assert.Equal(t, 42.66, rsi, "The RSI should be 42.66")
 }
 
-func TestRSI_LoadRSI(t *testing.T) {
-	// Antes é necessário rodar "TestRSI_CalculateRSI" para gerar o arquivo
-	TestRSI_CalculateRSI(t)
-
-	r := NewRSI("ETHBRL", dirFile, true)
-	assert.Equal(t, &RSI{id: "ETHBRL", filePath: dirFile, loadFile: true}, r)
-
-	rsi := r.Calculate()
-	assert.Equal(t, 40.26, rsi, "The RSI should be 40.26")
+func TestRSI_LastPrices(t *testing.T) {
+	r := NewRSI("BTCUSDT")
+	r.LastPrices()
+	assert.NotNil(t, r.prices, "The prices slice should be nil")
+	assert.Equal(t, len(r.prices), limit+1, fmt.Sprintf("The length of the prices slice should be %d", limit+1))
+	f := r.Calculate()
+	assert.NotEqual(t, 0.0, f, "The RSI should be different from 0.0")
+	fmt.Println("RSI=", f)
+	for _, v := range r.prices {
+		fmt.Println(v)
+	}
 }

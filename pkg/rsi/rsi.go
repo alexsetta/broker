@@ -1,55 +1,96 @@
 package rsi
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"math"
-	"os"
+	"net/http"
 	"strconv"
-	"strings"
+	"time"
 )
 
-const period = 14
+const (
+	limit = 14
+	url   = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
+)
 
 type RSI struct {
-	id       string
-	filePath string
-	loadFile bool
-	prices   []float64
+	id     string
+	prices []float64
+}
+
+type Trade struct {
+	Price string `json:"price"`
 }
 
 // NewRSI returns a new RSI struct
-func NewRSI(id string, filePath string, loadFile bool) *RSI {
+func NewRSI(id string) *RSI {
 	return &RSI{
-		id:       id,
-		filePath: filePath,
-		loadFile: loadFile,
+		id:     id,
+		prices: []float64{},
 	}
+}
+
+func binanceTimeStampToTime(timestamp int64) time.Time {
+	return time.Unix(0, timestamp*int64(time.Millisecond))
 }
 
 // AppendPrice appends a new price to the prices slice
 func (r *RSI) Add(price float64) {
-	if len(r.prices) == (period + 1) {
+	if len(r.prices) == (limit + 1) {
 		r.prices = r.prices[1:]
 	}
 	r.prices = append(r.prices, price)
 }
 
-// calculateRSI calculates the RSI for the given period
+// LastPrices get last n prices and calculate RSI
+func (r *RSI) LastPrices() {
+	r.prices = []float64{}
+
+	// get last n trades
+	resp, err := http.Get(fmt.Sprintf(url, r.id, limit+1))
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	// read body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	// unmarshal json
+	var trades []Trade
+	err = json.Unmarshal(body, &trades)
+	if err != nil {
+		return
+	}
+
+	r.prices = []float64{}
+	for _, trade := range trades {
+		f, err := strconv.ParseFloat(trade.Price, 64)
+		if err != nil {
+			f = 0.0
+		}
+		r.Add(f)
+	}
+
+	return
+}
+
+// Calculate calculates the RSI for the given period
 func (r *RSI) Calculate() float64 {
 	var (
 		avgGain float64
 		avgLoss float64
 	)
 
-	if len(r.prices) < (period+1) && r.loadFile && len(r.filePath) > 0 {
-		r.Load()
-	}
-
-	if len(r.prices) < (period + 1) {
+	if len(r.prices) < (limit + 1) {
 		return 0
 	}
-	start := len(r.prices) - period
+	start := len(r.prices) - limit
 	finish := len(r.prices)
 	interval := finish - start
 
@@ -66,43 +107,5 @@ func (r *RSI) Calculate() float64 {
 	rs := avgGain / avgLoss
 	rsi := 100 - (100 / (1 + rs))
 
-	if !r.loadFile {
-		r.save()
-	}
 	return math.Round(rsi*100) / 100
-}
-
-// get file name
-func (r *RSI) fileName() string {
-	return fmt.Sprintf("%s/rsi_%s.txt", r.filePath, strings.ToLower(r.id))
-}
-
-// save buffer to file
-func (r *RSI) save() {
-	buffer := ""
-	for _, price := range r.prices {
-		buffer += fmt.Sprintf("%f ", price)
-	}
-
-	err := os.WriteFile(r.fileName(), []byte(buffer), 0644)
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-// load buffer from file
-func (r *RSI) Load() {
-	buffer, err := os.ReadFile(r.fileName())
-	if err != nil {
-		log.Println(err)
-	}
-	prices := strings.Split(string(buffer), " ")
-	for _, price := range prices {
-		if price != "" {
-			val, err := strconv.ParseFloat(price, 64)
-			if err == nil {
-				r.Add(val)
-			}
-		}
-	}
 }

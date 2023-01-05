@@ -43,10 +43,10 @@ func main() {
 	}
 	mr := make(map[string]*rsi.RSI)
 	for _, atv := range carteira.Ativos {
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dir.Files, false)
-		if len(atv.RSI) > 0 {
-			mr[atv.Simbolo].Load()
-		}
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo)
+		//	if len(atv.RSI) > 0 {
+		//		mr[atv.Simbolo].Load()
+		//	}
 	}
 
 	for {

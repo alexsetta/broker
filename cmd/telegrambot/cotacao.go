@@ -36,7 +36,12 @@ func Cotacao(id string) string {
 
 	mr := make(map[string]*rsi.RSI)
 	for _, atv := range carteira.Ativos {
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirBase+"/files", true)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo)
+		err := mr[atv.Simbolo].LastPrices()
+		if err != nil {
+			return fmt.Sprintf("price: last prices: %s", err)
+		}
+		mr[atv.Simbolo].Calculate()
 	}
 
 	resposta := "["
@@ -85,7 +90,7 @@ func Total() string {
 		if atv.Tipo != "criptomoeda" {
 			continue
 		}
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirBase+"/files", false)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo)
 
 		_, _, out, err := price.Get(atv, config, alerta, mr)
 		if err != nil {

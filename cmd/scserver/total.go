@@ -30,7 +30,7 @@ func Total(c *gin.Context) {
 		if atv.Tipo != "criptomoeda" {
 			continue
 		}
-		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo, dirFiles, false)
+		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo)
 
 		_, _, out, err := price.Get(atv, config, alerta, mr)
 		if err != nil {

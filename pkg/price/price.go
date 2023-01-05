@@ -78,7 +78,7 @@ func Get(ativo tipos.Ativo, cfg tipos.Config, alerta tipos.Alertas, rsi map[stri
 
 	if (ativo.Tipo == "criptomoeda" || ativo.Tipo == "etf") && len(ativo.RSI) > 0 {
 		//result.RSI, _ = GetRSI(ativo.RSI)
-		rsi[ativo.Simbolo].Add(result.Preco)
+		rsi[ativo.Simbolo].LastPrices()
 		result.RSI = rsi[ativo.Simbolo].Calculate()
 	}
 
