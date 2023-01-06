@@ -7,7 +7,6 @@ import (
 	"math"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 const (
@@ -32,10 +31,6 @@ func NewRSI(id string) *RSI {
 	}
 }
 
-func binanceTimeStampToTime(timestamp int64) time.Time {
-	return time.Unix(0, timestamp*int64(time.Millisecond))
-}
-
 // AppendPrice appends a new price to the prices slice
 func (r *RSI) Add(price float64) {
 	if len(r.prices) == (limit + 1) {
@@ -44,8 +39,8 @@ func (r *RSI) Add(price float64) {
 	r.prices = append(r.prices, price)
 }
 
-// LastPrices get last n prices and calculate RSI
-func (r *RSI) LastPrices() {
+// LoadPrices get last n prices and calculate RSI
+func (r *RSI) LoadPrices() {
 	r.prices = []float64{}
 
 	// get last n trades
@@ -68,6 +63,7 @@ func (r *RSI) LastPrices() {
 		return
 	}
 
+	// convert value string to float64
 	r.prices = []float64{}
 	for _, trade := range trades {
 		f, err := strconv.ParseFloat(trade.Price, 64)
@@ -82,13 +78,10 @@ func (r *RSI) LastPrices() {
 
 // Calculate calculates the RSI for the given period
 func (r *RSI) Calculate() float64 {
-	var (
-		avgGain float64
-		avgLoss float64
-	)
+	var avgGain, avgLoss float64
 
 	if len(r.prices) < (limit + 1) {
-		return 0
+		return 0.0
 	}
 	start := len(r.prices) - limit
 	finish := len(r.prices)

@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-const (
-	dirFile = "d:/dev/go/app/broker/files"
-)
-
 func TestRSI_Add(t *testing.T) {
 	r := NewRSI("teste")
 	assert.Equal(t, &RSI{id: "teste"}, r)
@@ -107,7 +103,7 @@ func TestRSI_ManyRSI(t *testing.T) {
 
 func TestRSI_LastPrices(t *testing.T) {
 	r := NewRSI("BTCUSDT")
-	r.LastPrices()
+	r.LoadPrices()
 	assert.NotNil(t, r.prices, "The prices slice should be nil")
 	assert.Equal(t, len(r.prices), limit+1, fmt.Sprintf("The length of the prices slice should be %d", limit+1))
 	f := r.Calculate()
