@@ -188,7 +188,7 @@ func priceString(ativo tipos.Ativo, doc string) (string, []string, error) {
 		if len(matches) < 11 {
 			return "", matches, fmt.Errorf("priceString: cotação não encontrada: %s", ativo.Simbolo)
 		}
-		s = strings.ReplaceAll(matches[11], `"`, "")
+		s = strings.ReplaceAll(matches[15], `"`, "")
 		s = strings.ReplaceAll(s, ".", ",")
 		return s, matches, nil
 	}
