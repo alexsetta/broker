@@ -179,20 +179,33 @@ func GetRSI(url string) (float64, error) {
 	return price, nil
 }
 
+// Find 'lastPrice' in matches and return the value formatted
+func findLastPrice(matches []string) (string, error) {
+	for i, m := range matches {
+		if strings.Contains(m, "lastPrice") && len(matches) > i+1 {
+			m = matches[i+1]
+			s := strings.ReplaceAll(m, `"`, "")
+			s = strings.ReplaceAll(s, ".", ",")
+			return s, nil
+		}
+	}
+	return "", fmt.Errorf("findLastPrice: not found")
+}
+
 func priceString(ativo tipos.Ativo, doc string) (string, []string, error) {
 	var matches []string
-	var s string
 
 	if strings.Contains(ativo.Link, "binance") {
 		matches = reBNC.FindAllString(doc, 32)
-		if len(matches) < 11 {
-			return "", matches, fmt.Errorf("priceString: cotação não encontrada: %s", ativo.Simbolo)
+		s, err := findLastPrice(matches)
+		if err != nil {
+			return "", matches, fmt.Errorf("priceString: %w", err)
 		}
-		s = strings.ReplaceAll(matches[15], `"`, "")
-		s = strings.ReplaceAll(s, ".", ",")
+
 		return s, matches, nil
 	}
 
+	var s string
 	if ativo.Tipo == "acao" {
 		matches = re.FindStringSubmatch(doc)
 		if len(matches) != 2 {
