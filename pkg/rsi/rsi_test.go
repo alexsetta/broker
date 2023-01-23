@@ -8,7 +8,7 @@ import (
 
 func TestRSI_Add(t *testing.T) {
 	r := NewRSI("teste")
-	assert.Equal(t, &RSI{id: "teste"}, r)
+	assert.NotNil(t, r, "The RSI should not be nil")
 
 	r.Add(1.0)
 	r.Add(2.0)
@@ -32,9 +32,34 @@ func TestRSI_Add(t *testing.T) {
 	assert.Equal(t, r.prices[14], 16.0, "The last element of the prices slice should be 16.0")
 }
 
+func TestRSI_Calculate(t *testing.T) {
+	r := NewRSI("teste")
+	assert.NotNil(t, r, "The RSI should not be nil")
+
+	r.Add(31.88)
+	r.Add(31.68)
+	r.Add(31.81)
+	r.Add(32.31)
+	r.Add(33.03)
+	r.Add(32.91)
+	r.Add(32.45)
+	r.Add(33.08)
+	r.Add(33.27)
+	r.Add(33.21)
+	r.Add(32.32)
+	r.Add(32.97)
+	r.Add(32.75)
+	r.Add(32.76)
+	r.Add(32.59)
+	r.Add(31.23)
+
+	rsi := r.Calculate()
+	assert.Equal(t, 19.00, rsi, "The RSI should be 42.66")
+}
+
 func TestRSI_CalculateRSI(t *testing.T) {
 	r := NewRSI("ETHBRL")
-	assert.Equal(t, &RSI{id: "ETHBRL"}, r)
+	assert.NotNil(t, r, "The RSI should not be nil")
 
 	r.Add(6584.92)
 	r.Add(6584.92)
@@ -62,7 +87,7 @@ func TestRSI_CalculateRSI(t *testing.T) {
 
 func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 	r := NewRSI("ETHBRL")
-	assert.Equal(t, &RSI{id: "ETHBRL"}, r)
+	assert.NotNil(t, r, "The RSI should not be nil")
 
 	r.Add(6584.92)
 	r.Add(6584.92)

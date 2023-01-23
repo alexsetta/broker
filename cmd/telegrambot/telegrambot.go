@@ -47,9 +47,9 @@ func main() {
 			case cmd == "total":
 				response = Total()
 			case cmd == "eth":
-				response = Cotacao("ethbusd")
+				response = Cotacao("ethusd")
 			case cmd == "btc":
-				response = Cotacao("btcbusd")
+				response = Cotacao("btcusd")
 			case cmd[0:1] == "/":
 				response = Cotacao(cmd[1:])
 			default:
