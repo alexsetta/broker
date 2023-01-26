@@ -42,8 +42,10 @@ func main() {
 		log.Fatal(err)
 	}
 	mr := make(map[string]*rsi.RSI)
+	mc := make(map[string]*price.Collection)
 	for _, atv := range carteira.Ativos {
 		mr[atv.Simbolo] = rsi.NewRSI(atv.Simbolo)
+		mc[atv.Simbolo] = price.NewCollection(atv.Simbolo)
 	}
 
 	for {

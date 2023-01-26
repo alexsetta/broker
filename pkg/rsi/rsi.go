@@ -80,14 +80,12 @@ func (r *RSI) LoadPrices() {
 func (r *RSI) Calculate() float64 {
 	var avgGain, avgLoss float64
 
-	if len(r.prices) < (limit + 1) {
+	if len(r.prices) < (limit) {
 		return 0.0
 	}
-	start := len(r.prices) - limit
-	finish := len(r.prices)
-	interval := finish - start
+	finish := len(r.prices) - 1
 
-	for i := start; i < finish; i++ {
+	for i := 1; i < finish; i++ {
 		if r.prices[i] > r.prices[i-1] {
 			avgGain += r.prices[i] - r.prices[i-1]
 		} else {
@@ -95,8 +93,12 @@ func (r *RSI) Calculate() float64 {
 		}
 	}
 
-	avgGain /= float64(interval)
-	avgLoss /= float64(interval)
+	avgGain /= float64(limit)
+	avgLoss /= float64(limit)
+
+	//avgGain = (avgGain*13 + r.prices[finish]) / float64(limit)
+	//avgLoss = (avgLoss*13 + r.prices[finish]) / float64(limit)
+
 	rs := avgGain / avgLoss
 	rsi := 100 - (100 / (1 + rs))
 
