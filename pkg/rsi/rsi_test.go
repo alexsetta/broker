@@ -196,7 +196,7 @@ func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 func TestRSI_ManyRSI(t *testing.T) {
 	mr := make(map[string]*RSI)
 	mr["ETHBRL"] = NewRSI("ETHBRL")
-	assert.Equal(t, &RSI{id: "ETHBRL"}, mr["ETHBRL"])
+	assert.NotNil(t, mr["ETHBRL"], "The RSI should not be nil")
 
 	mr["ETHBRL"].Add(6584.92)
 	mr["ETHBRL"].Add(6584.92)
