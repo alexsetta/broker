@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	limit   = 14
-	periods = 14
-	url     = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
+	limit = 14
+	url   = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
 )
 
 type RSI struct {
