@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	limit = 14
+	limit = 56
 	url   = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
 )
 
@@ -21,6 +21,7 @@ type RSI struct {
 
 type Trade struct {
 	Price string `json:"price"`
+	Time  int64  `json:"time"`
 }
 
 // NewRSI returns a new RSI struct
@@ -44,7 +45,7 @@ func (r *RSI) LoadPrices() {
 	r.prices = []float64{}
 
 	// get last n trades
-	resp, err := http.Get(fmt.Sprintf(url, r.id, limit+1))
+	resp, err := http.Get(fmt.Sprintf(url, r.id, 500))
 	if err != nil {
 		return
 	}
@@ -65,13 +66,26 @@ func (r *RSI) LoadPrices() {
 
 	// convert value string to float64
 	r.prices = []float64{}
+	//last := trades[0].Time / 1000
 	for _, trade := range trades {
+		//secs := trade.Time / 1000
+		//diff := int(secs - last)
+		//if diff < 5 {
+		//	continue
+		//}
+		//last = secs
+
+		//t := time.Unix(0, trade.Time*int64(time.Millisecond))
+		//fmt.Println(t.Format("2006-01-02 15:04:05"), trade.Price, secs)
+
 		f, err := strconv.ParseFloat(trade.Price, 64)
 		if err != nil {
 			f = 0.0
 		}
 		r.Add(f)
 	}
+
+	//r.prices = r.prices[:15]
 
 	return
 }

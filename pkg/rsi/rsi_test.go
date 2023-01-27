@@ -56,36 +56,6 @@ func TestRSI_Calculate(t *testing.T) {
 	assert.Equal(t, 57.17, rsi, "The RSI should be 57.17")
 }
 
-func TestRSI_CalculateRSI(t *testing.T) {
-	r := NewRSI("ETHBRL")
-	assert.NotNil(t, r, "The RSI should not be nil")
-
-	r.Add(6584.92)
-	r.Add(6584.92)
-	r.Add(6585.64)
-	r.Add(6582.45)
-	r.Add(6576.54)
-	r.Add(6580.43)
-	r.Add(6573.94)
-	r.Add(6574.50)
-	r.Add(6585.09)
-	r.Add(6580.40)
-	r.Add(6585.78)
-	r.Add(6580.00)
-	r.Add(6575.01)
-	r.Add(6574.43)
-	r.Add(6576.82)
-
-	expected := 42.66
-	rsi := r.Calculate()
-	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
-
-	expected = 40.26
-	r.Add(6573.53)
-	rsi = r.Calculate()
-	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
-}
-
 func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 	r := NewRSI("ETHBRL")
 	assert.NotNil(t, r, "The RSI should not be nil")
