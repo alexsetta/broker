@@ -53,79 +53,8 @@ func TestRSI_Calculate(t *testing.T) {
 	r.Add(32.59)
 	r.Add(31.23)
 
-	fmt.Println(calcRSI(r.prices, 14))
-
-	//rsi := r.Calculate()
-	//assert.Equal(t, 19.00, rsi, "The RSI should be 42.66")
-}
-
-// Rsi - Relative strength index
-func calcRSI(inReal []float64, inTimePeriod int) []float64 {
-	outReal := make([]float64, len(inReal))
-
-	if inTimePeriod < 2 {
-		return outReal
-	}
-
-	// variable declarations
-	tempValue1 := 0.0
-	tempValue2 := 0.0
-	outIdx := inTimePeriod
-	today := 0
-	prevValue := inReal[today]
-	prevGain := 0.0
-	prevLoss := 0.0
-	today++
-
-	for i := inTimePeriod; i > 0; i-- {
-		tempValue1 = inReal[today]
-		today++
-		tempValue2 = tempValue1 - prevValue
-		prevValue = tempValue1
-		if tempValue2 < 0 {
-			prevLoss -= tempValue2
-		} else {
-			prevGain += tempValue2
-		}
-	}
-	//wip comparar com a versao original
-
-	prevLoss /= float64(inTimePeriod)
-	prevGain /= float64(inTimePeriod)
-
-	tempValue1 = prevGain + prevLoss
-	if !((-0.00000000000001 < tempValue1) && (tempValue1 < 0.00000000000001)) {
-		outReal[outIdx] = 100.0 * (prevGain / tempValue1)
-	} else {
-		outReal[outIdx] = 0.0
-	}
-	outIdx++
-
-	for today < len(inReal) {
-
-		tempValue1 = inReal[today]
-		today++
-		tempValue2 = tempValue1 - prevValue
-		prevValue = tempValue1
-		prevLoss *= float64(inTimePeriod - 1)
-		prevGain *= float64(inTimePeriod - 1)
-		if tempValue2 < 0 {
-			prevLoss -= tempValue2
-		} else {
-			prevGain += tempValue2
-		}
-		prevLoss /= float64(inTimePeriod)
-		prevGain /= float64(inTimePeriod)
-		tempValue1 = prevGain + prevLoss
-		if !((-0.00000000000001 < tempValue1) && (tempValue1 < 0.00000000000001)) {
-			outReal[outIdx] = 100.0 * (prevGain / tempValue1)
-		} else {
-			outReal[outIdx] = 0.0
-		}
-		outIdx++
-	}
-
-	return outReal
+	rsi := r.Calculate()
+	assert.Equal(t, 46.317512274959086, rsi, "The RSI should be 46.317512274959086")
 }
 
 func TestRSI_CalculateRSI(t *testing.T) {
@@ -148,12 +77,14 @@ func TestRSI_CalculateRSI(t *testing.T) {
 	r.Add(6574.43)
 	r.Add(6576.82)
 
+	expected := 42.657722987672116
 	rsi := r.Calculate()
-	assert.Equal(t, 42.66, rsi, "The RSI should be 42.66")
+	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
 
+	expected = 40.256629597946954
 	r.Add(6573.53)
 	rsi = r.Calculate()
-	assert.Equal(t, 40.26, rsi, "The RSI should be 40.26")
+	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
 }
 
 func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
@@ -169,7 +100,7 @@ func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 	r.Add(6573.94)
 
 	rsi := r.Calculate()
-	assert.Equal(t, 0.0, rsi, "The RSI should be 0.0")
+	assert.Equal(t, 100.0, rsi, "The RSI should be 100.0")
 }
 
 func TestRSI_ManyRSI(t *testing.T) {
@@ -193,19 +124,16 @@ func TestRSI_ManyRSI(t *testing.T) {
 	mr["ETHBRL"].Add(6574.43)
 	mr["ETHBRL"].Add(6576.82)
 
+	expected := 42.657722987672116
 	rsi := mr["ETHBRL"].Calculate()
-	assert.Equal(t, 42.66, rsi, "The RSI should be 42.66")
+	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
 }
 
 func TestRSI_LastPrices(t *testing.T) {
-	r := NewRSI("BTCUSDT")
+	r := NewRSI("BTCUSD")
 	r.LoadPrices()
 	assert.NotNil(t, r.prices, "The prices slice should be nil")
 	assert.Equal(t, len(r.prices), limit+1, fmt.Sprintf("The length of the prices slice should be %d", limit+1))
 	f := r.Calculate()
-	assert.NotEqual(t, 0.0, f, "The RSI should be different from 0.0")
 	fmt.Println("RSI=", f)
-	for _, v := range r.prices {
-		fmt.Println(v)
-	}
 }

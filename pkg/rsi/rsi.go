@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math"
 	"net/http"
 	"strconv"
 )
 
 const (
-	limit = 14
-	url   = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
+	limit   = 42
+	periods = 14
+	url     = "https://api.binance.us/api/v3/trades?symbol=%s&limit=%d"
 )
 
 type RSI struct {
@@ -78,27 +78,35 @@ func (r *RSI) LoadPrices() {
 
 // Calculate calculates the RSI for the given period
 func (r *RSI) Calculate() float64 {
-	var avgGain, avgLoss float64
+	var (
+		avgGain, avgLoss float64
+		gain, loss       float64
+	)
 
-	if len(r.prices) < (limit + 1) {
-		return 0.0
-	}
-	start := len(r.prices) - limit
-	finish := len(r.prices)
-	interval := finish - start
-
-	for i := start; i < finish; i++ {
-		if r.prices[i] > r.prices[i-1] {
-			avgGain += r.prices[i] - r.prices[i-1]
+	prices := r.prices
+	for i := 1; i < len(prices); i++ {
+		change := prices[i] - prices[i-1]
+		if change > 0 {
+			gain += change
 		} else {
-			avgLoss += r.prices[i-1] - r.prices[i]
+			loss -= change
+		}
+
+		if i == periods {
+			avgGain = gain / float64(periods)
+			avgLoss = loss / float64(periods)
+		} else if i > periods {
+			avgGain = ((avgGain * float64(periods-1)) + change) / float64(periods)
+			avgLoss = ((avgLoss * float64(periods-1)) + change) / float64(periods)
 		}
 	}
 
-	avgGain /= float64(interval)
-	avgLoss /= float64(interval)
+	if avgLoss == 0 {
+		return 100
+	}
+
 	rs := avgGain / avgLoss
 	rsi := 100 - (100 / (1 + rs))
 
-	return math.Round(rsi*100) / 100
+	return rsi
 }
