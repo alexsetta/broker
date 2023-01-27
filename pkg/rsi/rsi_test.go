@@ -51,10 +51,9 @@ func TestRSI_Calculate(t *testing.T) {
 	r.Add(32.75)
 	r.Add(32.76)
 	r.Add(32.59)
-	r.Add(31.23)
 
 	rsi := r.Calculate()
-	assert.Equal(t, 46.32, rsi, "The RSI should be 46.32")
+	assert.Equal(t, 57.17, rsi, "The RSI should be 57.17")
 }
 
 func TestRSI_CalculateRSI(t *testing.T) {
