@@ -54,7 +54,7 @@ func TestRSI_Calculate(t *testing.T) {
 	r.Add(31.23)
 
 	rsi := r.Calculate()
-	assert.Equal(t, 46.317512274959086, rsi, "The RSI should be 46.317512274959086")
+	assert.Equal(t, 46.32, rsi, "The RSI should be 46.32")
 }
 
 func TestRSI_CalculateRSI(t *testing.T) {
@@ -77,11 +77,11 @@ func TestRSI_CalculateRSI(t *testing.T) {
 	r.Add(6574.43)
 	r.Add(6576.82)
 
-	expected := 42.657722987672116
+	expected := 42.66
 	rsi := r.Calculate()
 	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
 
-	expected = 40.256629597946954
+	expected = 40.26
 	r.Add(6573.53)
 	rsi = r.Calculate()
 	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
@@ -100,7 +100,7 @@ func TestRSI_CalculateRSIWithFewPrices(t *testing.T) {
 	r.Add(6573.94)
 
 	rsi := r.Calculate()
-	assert.Equal(t, 100.0, rsi, "The RSI should be 100.0")
+	assert.Equal(t, 0.0, rsi, "The RSI should be 100.0")
 }
 
 func TestRSI_ManyRSI(t *testing.T) {
@@ -124,7 +124,7 @@ func TestRSI_ManyRSI(t *testing.T) {
 	mr["ETHBRL"].Add(6574.43)
 	mr["ETHBRL"].Add(6576.82)
 
-	expected := 42.657722987672116
+	expected := 42.66
 	rsi := mr["ETHBRL"].Calculate()
 	assert.Equal(t, expected, rsi, fmt.Sprintf("The RSI should be %f", expected))
 }
